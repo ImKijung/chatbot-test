@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with GPT-3</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Chat with GPT-3</h1>
+    <div id="chat-box" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;"></div>
+    <input type="text" id="question-input" placeholder="Type your question...">
+    <button onclick="sendQuestion()">Send</button>
+
+    <script>
+        function sendQuestion() {
+            var question = $("#question-input").val();
+            $.ajax({
+                url: "http://127.0.0.1:5000/chat",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ question: question }),
+                success: function(response) {
+                    var summary = response.summary;
+                    var urls = response.urls;
+                    var chatBox = $("#chat-box");
+                    chatBox.append("<p>User: " + question + "</p>");
+                    chatBox.append("<p>GPT-3: " + summary + "</p>");
+                    chatBox.append("<p>Related URLs: " + urls.join(", ") + "</p>");
+                    chatBox.scrollTop(chatBox[0].scrollHeight);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
